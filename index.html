@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Noor — Shia Islamic Companion</title>
+<title>Misbah-ul-Huda — Shia Islamic Companion</title>
 <meta name="description" content="Daily prayers, Qaza tracker, Tasbeeh, Ziyarat library and Hijri calendar — a calm Shia Islamic companion.">
 <meta name="theme-color" content="#0A0F1C">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Noor">
+<meta name="apple-mobile-web-app-title" content="Misbah-ul-Huda">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
@@ -44,6 +45,8 @@ header.topbar{padding:calc(14px + env(safe-area-inset-top)) 2px 4px; display:fle
 .topbar .lbl{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--txt3)}
 .topbar .date{font-size:19px; font-weight:700; margin-top:2px}
 .topbar .hijri{font-size:13px; color:var(--amber-300); margin-top:2px}
+.brandlogo{height:46px; width:46px; object-fit:cover; border-radius:12px; border:1px solid var(--edge)}
+.brandbig{display:block; height:120px; width:120px; object-fit:cover; border-radius:24px; margin:18px auto 4px; border:1px solid var(--edge)}
 .avatar{width:42px;height:42px;border-radius:50%;background:var(--glass2);border:1px solid var(--edge);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--amber-300);cursor:pointer}
 .screen{display:none; animation:rise .35s cubic-bezier(.22,1,.36,1)}
 .screen.active{display:block}
@@ -164,6 +167,7 @@ select{appearance:none}
       <div class="date" id="tb-date">—</div>
       <div class="hijri" id="tb-hijri">—</div>
     </div>
+    <img class="brandlogo" src="icon-192.png" alt="Misbah-ul-Huda">
     <div class="avatar" id="tb-avatar" title="Settings">N</div>
   </header>
 
@@ -306,7 +310,8 @@ select{appearance:none}
       <div class="setrow"><div class="k"><b>Start over</b><span>Erase everything on this device</span></div>
         <button class="btn crimson small" id="btn-wipe">Erase data</button></div>
     </div>
-    <p class="foot">Noor — Shia Islamic Companion · Luminous Courtyard design · Data never leaves your device.</p>
+    <img class="brandbig" src="logo.png" alt="Misbah-ul-Huda logo">
+    <p class="foot">Misbah-ul-Huda — Shia Islamic Companion · Luminous Courtyard design · Data never leaves your device.</p>
   </section>
 </div>
 

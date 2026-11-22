@@ -1,7 +1,7 @@
 /* Noor service worker — offline app shell */
-const CACHE = 'noor-v3';
+const CACHE = 'misbah-v1';
 const ASSETS = ['./', './index.html', './app.js', './texts.js', './auth.js', './config.js', './manifest.webmanifest',
-  './icon-180.png', './icon-192.png', './icon-512.png'];
+  './logo.png', './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

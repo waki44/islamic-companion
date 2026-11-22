@@ -576,7 +576,7 @@ function init() {
   $('#import-file').addEventListener('change', e => {
     const f = e.target.files[0]; if (!f) return;
     const rd = new FileReader();
-    rd.onload = () => { try { const data = JSON.parse(rd.result); if (data && data.v === 1) { S = Object.assign(defaultState(), data); save(); toast('Backup restored'); show('home'); } else toast('That file is not a Noor backup'); } catch (err) { toast('Could not read that file'); } };
+    rd.onload = () => { try { const data = JSON.parse(rd.result); if (data && data.v === 1) { S = Object.assign(defaultState(), data); save(); toast('Backup restored'); show('home'); } else toast('That file is not a Misbah-ul-Huda backup'); } catch (err) { toast('Could not read that file'); } };
     rd.readAsText(f);
   });
   $('#btn-wipe').addEventListener('click', () => {

@@ -1,5 +1,5 @@
 /* Noor service worker — offline app shell */
-const CACHE = 'misbah-v3';
+const CACHE = 'misbah-v4';
 const ASSETS = ['./', './index.html', './app.js', './texts.js', './auth.js', './config.js', './manifest.webmanifest',
   './logo.png', './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {

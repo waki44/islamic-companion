@@ -365,7 +365,14 @@ select{appearance:none}
   last=now;
 },{passive:false});document.addEventListener('gesturestart',function(e){e.preventDefault();});})();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/dist/Adhan.js"></script>
+<script type="module">
+/* Adhan prayer-times library. The old dist/Adhan.js URL 404s (v4 ships no UMD
+   bundle), which silently killed prayer times — load the ESM bundle instead
+   and expose it as the global the app expects. Module scripts run before
+   DOMContentLoaded, so Adhan is ready when the app initialises. */
+import * as Adhan from 'https://cdn.jsdelivr.net/npm/adhan@4.4.3/+esm';
+window.Adhan = Adhan;
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="texts.js"></script>
 <script src="app.js"></script>

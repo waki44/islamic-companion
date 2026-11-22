@@ -300,7 +300,9 @@ select{appearance:none}
       <div class="setrow"><div class="k"><b>Restore</b><span>Replace current data with a backup file</span></div>
         <button class="btn ghost small" id="btn-import">Import backup</button></div>
       <input type="file" id="import-file" accept="application/json" class="hidden">
-      <div class="setrow"><div class="k"><b>Cloud backup</b><span>Google sign-in backup arrives with the account system — for now, the backup file above keeps your data safe across phones.</span></div></div>
+      <div class="setrow"><div class="k"><b>Account &amp; cloud backup</b><span id="auth-status">Checking…</span></div>
+        <button class="btn primary small" id="auth-btn">Sign in with Google</button>
+        <button class="btn ghost small hidden" id="auth-out">Sign out</button></div>
       <div class="setrow"><div class="k"><b>Start over</b><span>Erase everything on this device</span></div>
         <button class="btn crimson small" id="btn-wipe">Erase data</button></div>
     </div>
@@ -348,7 +350,10 @@ select{appearance:none}
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/dist/Adhan.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="texts.js"></script>
 <script src="app.js"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>

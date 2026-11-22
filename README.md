@@ -9,6 +9,15 @@ like a native app and works offline.
 
 ![Misbah-ul-Huda logo](logo.png)
 
+## Screenshots
+<p>
+  <img src="screenshots/home.png" width="180" alt="Home — prayer ring and times">
+  <img src="screenshots/qaza.png" width="180" alt="Qaza tracker">
+  <img src="screenshots/tasbeeh.png" width="180" alt="Tasbeeh counter">
+  <img src="screenshots/library.png" width="180" alt="Ziyarat and Dua library">
+  <img src="screenshots/reader.png" width="180" alt="Ziyarat-e-Ashura reader">
+</p>
+
 ## Features
 - **Daily prayer tracker** — Fajr, Dhuhr, Asr, Maghrib, Isha with a progress ring
 - **Qaza tracker** — a separate counter for every prayer (including Namaz-e-Ayat),

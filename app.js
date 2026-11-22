@@ -9,6 +9,9 @@ const PRAYERS = [
   { id: 'maghrib', en: 'Maghrib', ar: 'المغرب' },
   { id: 'isha',    en: 'Isha',    ar: 'العشاء' }
 ];
+const QAZA_EXTRA = [
+  { id: 'ayat', en: 'Namaz-e-Ayat', ar: 'صلاة الآيات', note: 'Owed for eclipses, earthquakes & other natural signs' }
+];
 const KEY = 'noor.data.v1';
 const ISB = { lat: 33.6844, lon: 73.0479, label: 'Islamabad (default)' };
 
@@ -36,7 +39,7 @@ function starSVG(size, withInlay) {
 }
 
 /* ---------- state ---------- */
-function blankQaza() { return { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }; }
+function blankQaza() { return { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0, ayat: 0 }; }
 function defaultState() {
   return { v: 1, onboarded: false, name: '', startDate: null, reviewedThrough: null,
     days: {}, qaza: blankQaza(), qazaInitial: blankQaza(), qazaLog: {},
@@ -220,10 +223,10 @@ function renderHome() {
     save(); renderHome();
   }));
   // qaza card
-  const total = PRAYERS.reduce((a, p) => a + S.qaza[p.id], 0);
+  const total = qazaTotal();
   $('#qaza-card-home').innerHTML = total === 0
     ? '<div class="qlabel">Qaza remaining</div><div class="qnum" style="font-size:36px">None — Alhamdulillah</div><div class="qlabel">Tap to open Qaza</div>'
-    : '<div class="qlabel">Qaza remaining</div><div class="qnum">' + total + '</div><div class="qlabel">' + PRAYERS.filter(p => S.qaza[p.id] > 0).map(p => p.en + ' ' + S.qaza[p.id]).join(' · ') + '</div><div class="qlabel" style="color:var(--crimson-300)">Tap to open Qaza →</div>';
+    : '<div class="qlabel">Qaza remaining</div><div class="qnum">' + total + '</div><div class="qlabel">' + PRAYERS.concat(QAZA_EXTRA).filter(p => S.qaza[p.id] > 0).map(p => p.en + ' ' + S.qaza[p.id]).join(' · ') + '</div><div class="qlabel" style="color:var(--crimson-300)">Tap to open Qaza →</div>';
   renderAmal();
 }
 function renderAmal() {
@@ -244,8 +247,8 @@ function renderAmal() {
 }
 
 /* ---------- QAZA ---------- */
-function qazaTotal() { return PRAYERS.reduce((a, p) => a + S.qaza[p.id], 0); }
-function qazaInitialTotal() { return PRAYERS.reduce((a, p) => a + S.qazaInitial[p.id], 0); }
+function qazaTotal() { return PRAYERS.reduce((a, p) => a + S.qaza[p.id], 0) + (S.qaza.ayat || 0); }
+function qazaInitialTotal() { return PRAYERS.reduce((a, p) => a + S.qazaInitial[p.id], 0) + (S.qazaInitial.ayat || 0); }
 function renderQaza() {
   const sug = suggestedQaza();
   const qb = $('#qaza-banner'); qb.innerHTML = sug ? suggestionBannerHTML(sug) : '';
@@ -258,12 +261,12 @@ function renderQaza() {
     '<div class="qlabel">' + (init > 0 ? pct + '% of your qaza journey complete' : 'Set your starting qaza below') + '</div></div>' +
     '<svg width="86" height="86" viewBox="0 0 86 86"><circle cx="43" cy="43" r="36" fill="none" stroke="#54483C" stroke-width="6"/>' +
     '<circle cx="43" cy="43" r="36" fill="none" stroke="#D4485F" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + (2 * Math.PI * 36) + '" stroke-dashoffset="' + (2 * Math.PI * 36 * (1 - pct / 100)) + '" transform="rotate(-90 43 43)"/></svg></div>';
-  $('#qaza-list').innerHTML = PRAYERS.map(p =>
-    '<div class="qrow"><div class="names"><div class="en" style="font-weight:600">' + p.en + '</div><div class="ar" style="font-family:\'Amiri\',serif; color:var(--txt2)">' + p.ar + '</div></div>' +
-    '<div class="rem">' + S.qaza[p.id] + '</div>' +
-    '<button class="btn primary small" data-perform="' + p.id + '"' + (S.qaza[p.id] === 0 ? ' disabled style="opacity:.35"' : '') + '>Performed</button></div>'
+  $('#qaza-list').innerHTML = PRAYERS.concat(QAZA_EXTRA).map(p =>
+    '<div class="qrow"><div class="names"><div class="en" style="font-weight:600">' + p.en + '</div><div class="ar" style="font-family:\'Amiri\',serif; color:var(--txt2)">' + p.ar + '</div>' + (p.note ? '<div class="small">' + p.note + '</div>' : '') + '</div>' +
+    '<div class="rem">' + (S.qaza[p.id] || 0) + '</div>' +
+    '<button class="btn primary small" data-perform="' + p.id + '"' + (!S.qaza[p.id] ? ' disabled style="opacity:.35"' : '') + '>Performed</button></div>'
   ).join('') +
-    '<p class="small">Wrong count? Adjust any prayer:</p>' + PRAYERS.map(p =>
+    '<p class="small">Wrong count? Adjust any prayer:</p>' + PRAYERS.concat(QAZA_EXTRA).map(p =>
     '<div class="qrow"><div class="names"><div class="en">' + p.en + '</div></div>' +
     '<div class="stepper"><button data-adj="' + p.id + ':-1">−</button><span class="val">' + S.qaza[p.id] + '</span><button data-adj="' + p.id + ':1">+</button></div></div>'
   ).join('');
@@ -275,7 +278,7 @@ function renderQaza() {
   }));
   $('#qaza-list').querySelectorAll('[data-adj]').forEach(b => b.addEventListener('click', () => {
     const [id, d] = b.dataset.adj.split(':');
-    const nv = Math.max(0, S.qaza[id] + (+d));
+    const nv = Math.max(0, (S.qaza[id] || 0) + (+d));
     S.qaza[id] = nv; if (S.qazaInitial[id] < nv) S.qazaInitial[id] = nv;
     save(); renderQaza();
   }));
@@ -321,9 +324,12 @@ function renderTasbeeh() {
 const LIBRARY = [
   { id: 'ashura', note: 'For Imam al-Husayn (a.s.) · Ashura & every day' },
   { id: 'warith', note: 'For Imam al-Husayn (a.s.) · Thursday nights & daily' },
-  { id: 'kumayl', note: 'Dua of Kumayl ibn Ziyad · Thursday nights', soon: true },
-  { id: 'tawassul', note: 'Seeking intercession · Tuesday nights', soon: true },
-  { id: 'nudba', note: 'For Imam Mahdi (a.t.f.s.) · Friday mornings', soon: true }
+  { id: 'kumayl', note: 'Taught by Imam Ali (a.s.) to Kumayl · Thursday nights' },
+  { id: 'tawassul', note: 'Seeking intercession · Tuesday nights' },
+  { id: 'nudba', note: 'For Imam Mahdi (a.t.f.s.) · Friday mornings' },
+  { id: 'kisa', note: 'The Narration of the Cloak · Ahlul Bayt' },
+  { id: 'yaseen', note: 'Surah Ya-Sin (36) · the heart of the Quran' },
+  { id: 'mulk', note: 'Surah Al-Mulk (67) · recite before sleep' }
 ];
 function renderLibrary() {
   $('#library-list').innerHTML = LIBRARY.map(item => {
@@ -499,7 +505,7 @@ function renderSettings() {
 /* ---------- SETUP ---------- */
 const setupQ = blankQaza();
 function renderSetup() {
-  $('#setup-qaza').innerHTML = PRAYERS.map(p =>
+  $('#setup-qaza').innerHTML = PRAYERS.concat(QAZA_EXTRA).map(p =>
     '<div class="qrow"><div class="names"><div class="en" style="font-weight:600">' + p.en + ' qaza</div></div>' +
     '<div class="stepper"><button data-sq="' + p.id + ':-5">−</button><span class="val" id="sq-' + p.id + '">0</span><button data-sq="' + p.id + ':5">+</button></div></div>'
   ).join('') + '<p class="small">Use − / + in steps of 5, or tap + repeatedly. You can correct exact numbers later in the Qaza tab.</p>';

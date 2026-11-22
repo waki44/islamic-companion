@@ -1,5 +1,5 @@
 /* Noor service worker — offline app shell */
-const CACHE = 'noor-v1';
+const CACHE = 'noor-v2';
 const ASSETS = ['./', './index.html', './app.js', './texts.js', './manifest.webmanifest',
   './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {

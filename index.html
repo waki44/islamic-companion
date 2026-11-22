@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Noor — Shia Islamic Companion</title>
+<meta name="description" content="Daily prayers, Qaza tracker, Tasbeeh, Ziyarat library and Hijri calendar — a calm Shia Islamic companion.">
+<meta name="theme-color" content="#0A0F1C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Noor">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-950:#05080F; --navy-900:#0A0F1C; --navy-800:#101830; --navy-700:#18233F; --navy-600:#243459;
+  --crimson-700:#7A1226; --crimson-600:#9E1B32; --crimson-500:#BA2A44; --crimson-400:#D4485F; --crimson-300:#E8798A;
+  --amber-700:#94610E; --amber-600:#C0811A; --amber-500:#E0A030; --amber-400:#EDB955; --amber-300:#F4CF85;
+  --taupe-700:#54483C; --taupe-500:#8A7968; --taupe-400:#A39380; --taupe-300:#BDAE9B; --taupe-100:#E9DFD3; --taupe-50:#F6F0E9;
+  --glass:rgba(24,35,63,.52); --glass2:rgba(36,52,89,.40); --edge:rgba(246,240,233,.16);
+  --txt:var(--taupe-50); --txt2:var(--taupe-300); --txt3:var(--taupe-400);
+  --r-lg:28px; --r-md:20px;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,sans-serif; color:var(--txt); background:var(--navy-900);
+  min-height:100vh; overflow-x:hidden;
+}
+#bg{position:fixed; inset:0; z-index:-2; background:
+  radial-gradient(70% 55% at 88% 6%, rgba(224,160,48,.14), transparent 60%),
+  radial-gradient(75% 60% at 12% 96%, rgba(158,27,50,.20), transparent 62%),
+  linear-gradient(180deg, var(--navy-900), var(--navy-800));
+}
+#lattice{position:fixed; inset:0; z-index:-1; opacity:.5; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23E9DFD3' stroke-opacity='0.05'%3E%3Cpath d='M48 8 L88 48 L48 88 L8 48 Z'/%3E%3Cpath d='M48 24 L72 48 L48 72 L24 48 Z'/%3E%3Ccircle cx='48' cy='48' r='6'/%3E%3C/g%3E%3C/svg%3E");
+}
+#app{max-width:480px; margin:0 auto; padding:0 20px 130px;}
+header.topbar{padding:calc(14px + env(safe-area-inset-top)) 2px 4px; display:flex; justify-content:space-between; align-items:flex-start}
+.topbar .lbl{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--txt3)}
+.topbar .date{font-size:19px; font-weight:700; margin-top:2px}
+.topbar .hijri{font-size:13px; color:var(--amber-300); margin-top:2px}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--glass2);border:1px solid var(--edge);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--amber-300);cursor:pointer}
+.screen{display:none; animation:rise .35s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:block}
+@keyframes rise{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+h1.title{font-size:30px; font-weight:800; margin:10px 0 2px}
+.sub{color:var(--txt2); font-size:14px; margin:0 0 14px}
+.card{background:var(--glass); border:1px solid var(--edge); border-radius:var(--r-lg); backdrop-filter:blur(28px) saturate(150%); -webkit-backdrop-filter:blur(28px) saturate(150%); padding:18px; margin-bottom:14px; box-shadow:0 12px 32px -12px rgba(5,8,15,.7), inset 0 1px 0 rgba(246,240,233,.14)}
+.card.crimson{background:linear-gradient(160deg, rgba(158,27,50,.30), rgba(24,35,63,.52)); border-color:rgba(232,121,138,.35)}
+.card.amber{background:linear-gradient(160deg, rgba(224,160,48,.20), rgba(24,35,63,.52)); border-color:rgba(244,207,133,.35)}
+.hero{display:flex; flex-direction:column; align-items:center; padding:8px 0 2px}
+.ringwrap{position:relative; width:248px; height:248px}
+.ringwrap svg.ring{position:absolute; inset:0; transform:rotate(-90deg)}
+.starwrap{position:absolute; inset:0; display:flex; align-items:center; justify-content:center}
+.starwrap svg{filter:drop-shadow(0 0 22px rgba(224,160,48,.45))}
+.hero .count{margin-top:6px; font-size:15px; color:var(--txt2)}
+.hero .count b{font-size:26px; color:var(--txt); font-weight:800}
+.nextp{margin-top:2px; font-size:13px; color:var(--amber-300)}
+.prow{display:flex; align-items:center; gap:12px; padding:11px 2px; border-bottom:1px solid rgba(233,223,211,.08); cursor:pointer}
+.prow:last-child{border-bottom:none}
+.prow .glyph{width:34px;height:34px;border-radius:50%;border:2px solid var(--taupe-500); display:flex;align-items:center;justify-content:center; font-size:16px; color:transparent; flex:none; transition:all .25s}
+.prow.done .glyph{background:var(--amber-400); border-color:var(--amber-400); color:var(--navy-900)}
+.prow.missed .glyph{border-color:var(--crimson-400); color:var(--crimson-300)}
+.prow .names{flex:1}
+.prow .en{font-size:16px; font-weight:600}
+.prow .ar{font-family:'Amiri',serif; font-size:17px; color:var(--txt2)}
+.prow .time{font-size:13px; color:var(--txt3); font-variant-numeric:tabular-nums}
+.prow.done .en{color:var(--txt2)}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; font-family:inherit; font-weight:600; border-radius:999px; padding:0 22px; height:50px; font-size:16px; transition:transform .12s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(160deg, var(--amber-300), var(--amber-500) 55%, var(--amber-700)); color:var(--navy-900)}
+.btn.crimson{background:linear-gradient(160deg, var(--crimson-500), var(--crimson-700)); color:var(--taupe-50)}
+.btn.ghost{background:var(--glass); color:var(--txt); border:1px solid var(--edge); backdrop-filter:blur(20px)}
+.btn.small{height:38px; padding:0 16px; font-size:14px}
+.btn.block{width:100%}
+.qnum{font-size:52px; font-weight:800; line-height:1; font-variant-numeric:tabular-nums}
+.qlabel{color:var(--txt2); font-size:14px}
+.qrow{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid rgba(233,223,211,.08)}
+.qrow:last-child{border-bottom:none}
+.qrow .names{flex:1}
+.qrow .rem{font-size:30px; font-weight:800; min-width:64px; text-align:right; font-variant-numeric:tabular-nums}
+.stepper{display:flex; align-items:center; gap:10px}
+.stepper button{width:40px;height:40px;border-radius:50%;border:1px solid var(--edge);background:var(--glass2);color:var(--txt);font-size:20px;cursor:pointer}
+.stepper .val{min-width:44px; text-align:center; font-size:20px; font-weight:700}
+input[type=number],input[type=text],select{background:rgba(10,15,28,.6); border:1px solid var(--edge); color:var(--txt); border-radius:14px; height:48px; padding:0 14px; font-size:16px; font-family:inherit; width:100%}
+input:focus{outline:2px solid var(--amber-400); outline-offset:1px}
+label.flabel{display:block; font-size:13px; color:var(--txt2); margin:12px 0 6px}
+nav#tabbar{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(10px + env(safe-area-inset-bottom)); width:min(440px, calc(100% - 24px)); height:66px; background:var(--glass2); border:1px solid var(--edge); border-radius:999px; backdrop-filter:blur(40px) saturate(180%); -webkit-backdrop-filter:blur(40px) saturate(180%); display:flex; padding:6px; z-index:50; box-shadow:0 24px 48px -16px rgba(5,8,15,.8)}
+nav#tabbar .item{flex:1; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; border-radius:999px; color:var(--txt3); font-size:11px; font-weight:500; cursor:pointer; z-index:1}
+nav#tabbar .item svg{width:23px; height:23px}
+nav#tabbar .item.sel{color:var(--taupe-50)}
+nav#tabbar .item.sel svg{color:var(--amber-400)}
+#lens{position:absolute; top:6px; bottom:6px; border-radius:999px; background:linear-gradient(180deg, rgba(237,185,85,.30), rgba(224,160,48,.12)); border:1px solid rgba(244,207,133,.5); transition:left .38s cubic-bezier(.34,1.3,.44,1), width .38s cubic-bezier(.34,1.3,.44,1); z-index:0}
+.sheet{position:fixed; inset:0; z-index:60; display:none}
+.sheet.open{display:block}
+.sheet .scrim{position:absolute; inset:0; background:rgba(5,8,15,.55)}
+.sheet .panel{position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:min(480px,100%); max-height:88vh; overflow:auto; background:rgba(16,24,48,.92); border:1px solid var(--edge); border-bottom:none; border-radius:34px 34px 0 0; backdrop-filter:blur(50px); padding:14px 20px calc(26px + env(safe-area-inset-bottom)); animation:up .35s cubic-bezier(.22,1,.36,1)}
+@keyframes up{from{transform:translate(-50%,40px); opacity:0} to{transform:translate(-50%,0); opacity:1}}
+.grab{width:38px;height:5px;border-radius:3px;background:rgba(163,147,128,.6);margin:2px auto 14px}
+.tile{display:flex; align-items:center; gap:14px; width:100%; text-align:left; background:var(--glass); border:1px solid var(--edge); border-radius:22px; padding:16px; margin-bottom:10px; color:var(--txt); font-family:inherit; cursor:pointer}
+.tile .t-ic{width:44px;height:44px;border-radius:14px;background:rgba(224,160,48,.15); display:flex;align-items:center;justify-content:center; color:var(--amber-400); flex:none}
+.tile b{font-size:16px; display:block}
+.tile span{font-size:13px; color:var(--txt2)}
+.tasbeeh-disc{width:280px;height:280px;border-radius:50%; margin:14px auto; background:radial-gradient(circle at 35% 30%, rgba(246,240,233,.14), rgba(24,35,63,.55) 60%); border:1px solid var(--edge); backdrop-filter:blur(28px); display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; user-select:none; box-shadow:0 24px 48px -16px rgba(5,8,15,.8), inset 0 1px 0 rgba(246,240,233,.2); transition:transform .09s}
+.tasbeeh-disc:active{transform:scale(.96)}
+.tasbeeh-disc .dhikr{font-family:'Amiri',serif; font-size:30px; color:var(--amber-300); padding:0 22px; text-align:center; line-height:1.7}
+.tasbeeh-disc .cnt{font-size:70px; font-weight:800; line-height:1.05; font-variant-numeric:tabular-nums}
+.tasbeeh-disc .of{color:var(--txt3); font-size:13px}
+.chips{display:flex; gap:8px; flex-wrap:wrap; justify-content:center}
+.chip{border:1px solid var(--edge); background:var(--glass); color:var(--txt2); border-radius:999px; padding:9px 15px; font-size:14px; cursor:pointer; font-family:inherit}
+.chip.sel{background:rgba(224,160,48,.2); color:var(--amber-300); border-color:rgba(244,207,133,.5)}
+.lib-item{display:flex; align-items:center; gap:14px; width:100%; text-align:left; background:var(--glass); border:1px solid var(--edge); border-radius:22px; padding:16px; margin-bottom:10px; color:var(--txt); cursor:pointer; font-family:inherit}
+.lib-item .medal{width:42px;height:42px;flex:none;color:var(--taupe-400)}
+.lib-item b{font-size:16px; display:block}
+.lib-item .art{font-family:'Amiri',serif; color:var(--txt2); font-size:16px}
+.lib-item span{font-size:12.5px; color:var(--txt3); display:block}
+.reader-tools{position:sticky; top:0; display:flex; gap:8px; justify-content:flex-end; padding:8px 0; z-index:5}
+.seg{padding:14px 2px; border-bottom:1px solid rgba(233,223,211,.07)}
+.seg .arb{font-family:'Amiri',serif; direction:rtl; text-align:right; color:var(--taupe-50); line-height:2}
+.seg .eng{color:var(--txt2); font-size:14.5px; line-height:1.55; margin-top:6px}
+.seg.note{font-size:13.5px; color:var(--amber-300); text-align:center; font-style:italic; padding:12px 0 4px; border-bottom:none}
+.dotgrid{display:grid; gap:3px}
+.dotgrid .dot{width:100%; aspect-ratio:1; border-radius:3px; background:var(--taupe-700)}
+.dotgrid .dot.done{background:var(--amber-400)}
+.dotgrid .dot.part{background:var(--amber-700)}
+.cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.cal-cell{aspect-ratio:1; border-radius:12px; background:rgba(24,35,63,.4); border:1px solid rgba(233,223,211,.06); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:14px; cursor:pointer; position:relative}
+.cal-cell .g{font-size:9.5px; color:var(--txt3)}
+.cal-cell.today{border-color:var(--amber-400); color:var(--amber-300)}
+.cal-cell.period{background:rgba(158,27,50,.35); border-color:rgba(232,121,138,.4)}
+.cal-cell.special::after{content:""; position:absolute; bottom:5px; width:5px; height:5px; border-radius:50%; background:var(--amber-400)}
+.banner{background:linear-gradient(160deg, rgba(224,160,48,.18), rgba(24,35,63,.55)); border:1px solid rgba(244,207,133,.4); border-radius:var(--r-md); padding:14px 16px; margin-bottom:14px; font-size:14px}
+.banner b{color:var(--amber-300)}
+.banner .row{display:flex; gap:8px; margin-top:10px}
+.stat-row{display:flex; gap:12px}
+.stat{flex:1; text-align:center; padding:8px 0}
+.stat .v{font-size:30px; font-weight:800}
+.stat .k{font-size:12px; color:var(--txt3)}
+.toast{position:fixed; top:calc(12px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); background:rgba(16,24,48,.92); border:1px solid var(--edge); backdrop-filter:blur(30px); color:var(--txt); padding:11px 20px; border-radius:999px; font-size:14px; z-index:99; display:none; box-shadow:0 12px 32px rgba(5,8,15,.6)}
+.setrow{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 0; border-bottom:1px solid rgba(233,223,211,.08)}
+.setrow:last-child{border-bottom:none}
+.setrow .k b{display:block; font-size:15.5px}
+.setrow .k span{font-size:12.5px; color:var(--txt3)}
+.hidden{display:none !important}
+.center{text-align:center}
+.small{font-size:13px; color:var(--txt2)}
+.qibla-arrow{width:170px; height:170px; margin:8px auto; display:block}
+select{appearance:none}
+.foot{margin-top:18px; text-align:center; font-size:12px; color:var(--taupe-500)}
+</style>
+</head>
+<body>
+<div id="bg"></div><div id="lattice"></div>
+
+<div id="app">
+  <header class="topbar">
+    <div>
+      <div class="lbl">Today</div>
+      <div class="date" id="tb-date">—</div>
+      <div class="hijri" id="tb-hijri">—</div>
+    </div>
+    <div class="avatar" id="tb-avatar" title="Settings">N</div>
+  </header>
+
+  <!-- HOME -->
+  <section class="screen" id="screen-home">
+    <div id="home-banner"></div>
+    <div class="hero">
+      <div class="ringwrap">
+        <svg class="ring" id="hero-ring" viewBox="0 0 248 248"></svg>
+        <div class="starwrap" id="hero-star"></div>
+      </div>
+      <div class="count"><b id="hero-count">0</b> <span>of 5 today</span></div>
+      <div class="nextp" id="hero-next"></div>
+    </div>
+    <div id="ramzan-strip"></div>
+    <div class="card" id="prayer-card"></div>
+    <div class="card crimson" id="qaza-card-home" style="cursor:pointer"></div>
+    <div class="card" id="amal-card"></div>
+    <div style="display:flex; gap:12px">
+      <button class="tile" style="flex:1" id="tile-tasbeeh"><span class="t-ic" data-ic="tasbeeh"></span><span><b>Tasbeeh</b><span>Count dhikr</span></span></button>
+      <button class="tile" style="flex:1" id="tile-ziyarat"><span class="t-ic" data-ic="book"></span><span><b>Ziyarat</b><span>Read &amp; listen</span></span></button>
+    </div>
+  </section>
+
+  <!-- QAZA -->
+  <section class="screen" id="screen-qaza">
+    <h1 class="title">Qaza</h1>
+    <p class="sub">Every qaza prayer, counted down as you perform it.</p>
+    <div id="qaza-banner"></div>
+    <div class="card crimson" id="qaza-summary"></div>
+    <div class="card" id="qaza-list"></div>
+    <div class="card" id="qaza-plan"></div>
+  </section>
+
+  <!-- TASBEEH -->
+  <section class="screen" id="screen-tasbeeh">
+    <h1 class="title">Tasbeeh</h1>
+    <p class="sub">Tap the disc to count.</p>
+    <div class="chips" id="dhikr-chips"></div>
+    <div class="tasbeeh-disc" id="tasbeeh-disc">
+      <div class="dhikr" id="tasbeeh-dhikr"></div>
+      <div class="cnt" id="tasbeeh-count">0</div>
+      <div class="of" id="tasbeeh-of"></div>
+    </div>
+    <div class="chips" id="cycle-chips"></div>
+    <div class="center" style="margin-top:16px">
+      <button class="btn ghost small" id="tasbeeh-reset">Reset count</button>
+      <p class="small" id="tasbeeh-total"></p>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section class="screen" id="screen-library">
+    <h1 class="title">Library</h1>
+    <p class="sub">Ziyarat and duas — Arabic with English translation.</p>
+    <div id="library-list"></div>
+  </section>
+
+  <!-- READER -->
+  <section class="screen" id="screen-reader">
+    <button class="btn ghost small" id="reader-back">← Library</button>
+    <h1 class="title" id="reader-title"></h1>
+    <p class="sub" id="reader-intro"></p>
+    <div class="reader-tools">
+      <button class="chip" id="reader-translation">Translation: On</button>
+      <button class="chip" id="reader-font-minus">A−</button>
+      <button class="chip" id="reader-font-plus">A+</button>
+    </div>
+    <div class="card" style="padding:8px 18px" id="reader-body"></div>
+    <p class="foot">Text source: Fourteen Masoomeen (fiveshinesmedia.com). Urdu translation will be added from a verified source.</p>
+  </section>
+
+  <!-- CALENDAR -->
+  <section class="screen" id="screen-calendar">
+    <h1 class="title">Hijri Calendar</h1>
+    <p class="sub" id="cal-subtitle"></p>
+    <div style="display:flex; gap:8px; margin-bottom:12px">
+      <button class="btn ghost small" id="cal-prev">← Prev</button>
+      <button class="btn ghost small" id="cal-today">This month</button>
+      <button class="btn ghost small" id="cal-next">Next →</button>
+    </div>
+    <div class="card"><div class="cal-grid" id="cal-grid"></div>
+    <p class="small" id="cal-detail" style="margin:12px 0 0"></p></div>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="screen" id="screen-reports">
+    <h1 class="title">Monthly Report</h1>
+    <p class="sub" id="report-subtitle"></p>
+    <div class="card"><div class="stat-row" id="report-stats"></div></div>
+    <div class="card">
+      <p class="small" style="margin-top:0">Each column is a day, each row a prayer. Amber = prayed, dark amber = partly, taupe = none.</p>
+      <div class="dotgrid" id="report-grid"></div>
+    </div>
+    <button class="btn primary block" id="report-share">Share report</button>
+  </section>
+
+  <!-- LADIES -->
+  <section class="screen" id="screen-ladies">
+    <h1 class="title">Ladies' Section</h1>
+    <p class="sub">Mark the days of your cycle. Those days are private, and prayers missed on them are <b>never</b> counted as qaza.</p>
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
+        <button class="btn ghost small" id="lad-prev">←</button>
+        <b id="lad-month"></b>
+        <button class="btn ghost small" id="lad-next">→</button>
+      </div>
+      <div class="cal-grid" id="lad-grid"></div>
+      <p class="small">Tap a day to mark or unmark it. Marked days are excluded from qaza suggestions automatically.</p>
+    </div>
+  </section>
+
+  <!-- QIBLA -->
+  <section class="screen" id="screen-qibla">
+    <h1 class="title">Qibla</h1>
+    <p class="sub">Direction of the Kaaba from your location.</p>
+    <div class="card center">
+      <svg class="qibla-arrow" id="qibla-svg" viewBox="0 0 200 200"></svg>
+      <div class="qnum" id="qibla-deg" style="font-size:38px">—</div>
+      <p class="small" id="qibla-note">Finding your location…</p>
+      <button class="btn ghost small" id="qibla-locate">Use my location</button>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="screen" id="screen-settings">
+    <h1 class="title">Settings &amp; Backup</h1>
+    <p class="sub">Your data lives on this device and is yours alone.</p>
+    <div class="card">
+      <div class="setrow"><div class="k"><b>Your name</b><span>Shown on the home screen</span></div></div>
+      <input type="text" id="set-name" placeholder="Your name">
+      <div class="setrow"><div class="k"><b>Backup</b><span id="backup-status">Stored on this device</span></div>
+        <button class="btn primary small" id="btn-export">Download backup</button></div>
+      <div class="setrow"><div class="k"><b>Restore</b><span>Replace current data with a backup file</span></div>
+        <button class="btn ghost small" id="btn-import">Import backup</button></div>
+      <input type="file" id="import-file" accept="application/json" class="hidden">
+      <div class="setrow"><div class="k"><b>Cloud backup</b><span>Google sign-in backup arrives with the account system — for now, the backup file above keeps your data safe across phones.</span></div></div>
+      <div class="setrow"><div class="k"><b>Start over</b><span>Erase everything on this device</span></div>
+        <button class="btn crimson small" id="btn-wipe">Erase data</button></div>
+    </div>
+    <p class="foot">Noor — Shia Islamic Companion · Luminous Courtyard design · Data never leaves your device.</p>
+  </section>
+</div>
+
+<!-- MENU SHEET -->
+<div class="sheet" id="menu-sheet">
+  <div class="scrim" data-close="menu-sheet"></div>
+  <div class="panel">
+    <div class="grab"></div>
+    <button class="tile" data-goto="calendar"><span class="t-ic" data-ic="cal"></span><span><b>Hijri Calendar</b><span>Wiladat, shahadat and special days</span></span></button>
+    <button class="tile" data-goto="reports"><span class="t-ic" data-ic="chart"></span><span><b>Monthly Report</b><span>Your month at a glance</span></span></button>
+    <button class="tile" data-goto="ladies"><span class="t-ic" data-ic="moon"></span><span><b>Ladies' Section</b><span>Cycle days — never counted as qaza</span></span></button>
+    <button class="tile" data-goto="qibla"><span class="t-ic" data-ic="compass"></span><span><b>Qibla</b><span>Direction from your location</span></span></button>
+    <button class="tile" data-goto="settings"><span class="t-ic" data-ic="gear"></span><span><b>Settings &amp; Backup</b><span>Export, restore, your data</span></span></button>
+  </div>
+</div>
+
+<!-- SETUP OVERLAY -->
+<div class="sheet" id="setup-sheet">
+  <div class="panel" style="border-radius:34px; bottom:12px; width:min(460px, calc(100% - 24px))">
+    <div class="grab"></div>
+    <h1 class="title" style="font-size:24px">Assalamu alaikum</h1>
+    <p class="sub">Two quick things and your companion is ready. If you already carry qaza prayers, enter how many of each remain — honestly, just for yourself. Zero is fine.</p>
+    <div id="setup-qaza"></div>
+    <label class="flabel">How many qaza prayers will you perform each day? (your Khatam Plan)</label>
+    <div class="stepper"><button id="setup-minus">−</button><span class="val" id="setup-plan">2</span><button id="setup-plus">+</button></div>
+    <div style="height:16px"></div>
+    <button class="btn primary block" id="setup-done">Begin</button>
+    <button class="btn ghost block" id="setup-skip" style="margin-top:8px">Skip — I have no qaza</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<nav id="tabbar">
+  <div id="lens"></div>
+  <div class="item" data-tab="home"><span data-ic="home"></span>Home</div>
+  <div class="item" data-tab="qaza"><span data-ic="qaza"></span>Qaza</div>
+  <div class="item" data-tab="tasbeeh"><span data-ic="tasbeeh"></span>Tasbeeh</div>
+  <div class="item" data-tab="library"><span data-ic="book"></span>Ziyarat</div>
+  <div class="item" data-tab="menu"><span data-ic="menu"></span>Menu</div>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/dist/Adhan.js"></script>
+<script src="texts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
